@@ -1,0 +1,17 @@
+DEBUG:root:ADD:
+2 + 4 = 6
+2026-05-04 22:16:51,019:DEBUG:ADD:
+2 + 4 = 6
+2026-05-05 03:21:40,411:DEBUG:ADD:
+2 + 4 = 6
+INFO:Information of <__main__.Info object at 0x0000020CA834A120>: Name - Barnava Chakraborty; Email - Barnava.Chakraborty@email.com
+INFO:Information of engineer: Name - Barnava Chakraborty; Email - Barnava.Chakraborty@email.com
+INFO:root:Information of engineer: Name - Barnava Chakraborty; Email - Barnava.Chakraborty@email.com
+INFO->root->Information of engineer: Name - Barnava Chakraborty; Email - Barnava.Chakraborty@email.com
+INFO->root->Information of engineer: Name - Barnava Chakraborty; Email - Barnava.Chakraborty@email.com
+
+
+INFO:Info:Information of engineer: Name - Barnava Chakraborty; Email - Barnava.Chakraborty@email.com
+INFO:Info:Information of deiver: Name - Ramesh Gotti; Email - Ramesh.Gotti@email.com
+INFO:Info:Information of doctor: Name - Debojyoti Chakraborty; Email - Debojyoti.Chakraborty@email.com
+INFO:Info:Information of plumber: Name - Purushottom Seal; Email - Purushottom.Seal@email.com

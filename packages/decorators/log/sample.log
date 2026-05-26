@@ -1,0 +1,39 @@
+DEBUG:__main__:ADD:
+2 + 4 = 6
+DEBUG:__main__:SUB:
+2 + 4 = -2
+DEBUG:__main__:MUL:
+2 + 4 = 8
+DEBUG:__main__:DIV:
+2 + 4 = 0.5
+ERROR:__main__:Tried to Divide by Zero
+Traceback (most recent call last):
+  File "E:\python\packages\decorators\log\main.py", line 24, in div
+    div = num1/num2
+          ~~~~^~~~~
+ZeroDivisionError: division by zero
+ERROR:__main__:Tried to Divide by Zero
+Traceback (most recent call last):
+  File "E:\python\packages\decorators\log\main.py", line 29, in div
+    div = num1/num2
+          ~~~~^~~~~
+ZeroDivisionError: division by zero
+ERROR:__main__:Tried to Divide by Zero
+Traceback (most recent call last):
+  File "E:\python\packages\decorators\log\main.py", line 30, in div
+    div = num1/num2
+          ~~~~^~~~~
+ZeroDivisionError: division by zero
+ERROR:__main__:Tried to Divide by Zero
+Traceback (most recent call last):
+  File "E:\python\packages\decorators\log\main.py", line 31, in div
+    div = num1/num2
+          ~~~~^~~~~
+ZeroDivisionError: division by zero
+ERROR:__main__:New Output
+ERROR:__main__:Tried to Divide by Zero
+Traceback (most recent call last):
+  File "E:\python\packages\decorators\log\main.py", line 31, in div
+    div = num1/num2
+          ~~~~^~~~~
+ZeroDivisionError: division by zero

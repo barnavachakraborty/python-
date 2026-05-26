@@ -1,0 +1,7 @@
+numpy
+pandas
+matlab
+matplotlib
+opencv-contrib-python
+pyside6
+tkinter
