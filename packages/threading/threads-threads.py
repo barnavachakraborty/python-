@@ -6,12 +6,12 @@ start = time.perf_counter()
 def do_something(seconds):
     print(f"sleeping for {seconds} secs")
     time.sleep(seconds)
-    print("done Sleeping")
+    print(f"done Sleeping...{seconds}")
 
 threads = []
 
-for  _  in range(10):
-    t = threading.Thread(target=do_something, args=[1])
+for i in range(10):
+    t = threading.Thread(target=do_something, args=[i])
     t.start()
     threads.append(t)
 
@@ -20,4 +20,4 @@ for thread in threads:
 
 end = time.perf_counter()
 
-print(f"compleated in {round(end-start,2)} second(s)")
+print(f"compleated in {round(end-start,4)} second(s)")
