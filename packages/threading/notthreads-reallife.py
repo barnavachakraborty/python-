@@ -2,7 +2,7 @@ import requests
 import time 
 import logging
 
-logging.basicConfig(filename = "log.log", level = logging.INFO, format = "\n%(asctime)s\n%(message)s")
+logging.basicConfig(filename = "E:/python/packages/threading/log.log", level = logging.INFO, format = "\n%(asctime)s\n%(message)s")
 info = []
 img_urls = [
     'https://images.unsplash.com/photo-1516117172878-fd2c41f4a759',
@@ -23,10 +23,10 @@ img_urls = [
 ]
 def download_img(url:str):
     img_bytes = requests.get(url).content
-    img_name = url.split('/')[-1] + '.jpg'
+    img_name = 'E:/python/packages/threading/'+url.split('/')[-1] + '.jpg'
     with open(img_name,'wb') as img:
         img.write(img_bytes)
-        info.append(f"{img_name} is downloaded...\n")
+        info.append(f"{img_name.split('/')[-1]} is downloaded...\n")
 
 t1 = time.perf_counter()
 for img_url in img_urls:
