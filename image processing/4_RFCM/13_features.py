@@ -29,17 +29,18 @@ class features:
         self.img: npt.NDArray[np.uint8] = np.array(_img)
         self.height = _img.height
         self.width = _img.width
+    
+    @njit(cache=True, fastmath=True)
+    def _cal_glcm(self):
+        for i in range(self.height):
+            for j in range(self.width):
+                GLCM = np.zeros((256,256),dtype=np.float32)
+                
         
+    
     @property
     def features(self):
-        _glcm_dtype = ([
-            ('0_deg',np.float32),
-            ('45_deg',np.float32),
-            ('90_deg',np.float32),
-            ('135_deg',np.float32)
-        ])
         _pixel_dtype = np.dtype([
-            ('GLCM',_glcm_dtype),
             ('homogeneity',np.float32),
             ('edge',np.float32),
             ('asm',np.float32),
