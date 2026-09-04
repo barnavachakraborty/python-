@@ -1,12 +1,15 @@
 #1. paths -> typehint: str | os.PathLike[str]
 #2. to get the image pixels as pixel -> img = Image.open(filename).convert("L")
 
+from ImageGUI import getImg
 from numba import njit
 from PIL import Image
 import numpy as np
 import os
 import numpy.typing as npt
 from loggingIn import loggingIn
+from Loader import Loader
+from ANSI import ANSI
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_DIR  = os.path.join(BASE_DIR, 'loggs')
@@ -17,20 +20,24 @@ feature13log = loggingIn(os.path.join(LOG_DIR, '13_feature.log'))
 
 @njit(cache=True, fastmath=True)
 def cal_glcm(img: npt.NDArray, img_min: np.int32, img_max: np.int32) -> npt.NDArray:
-    features     = np.zeros((12, img.shape[0], img.shape[1]), dtype=np.float32)
-    homogeneity  = features[0]
-    asm          = features[1]
-    edge         = features[2]
-    contrast     = features[3]
-    correlation  = features[4]
-    idm          = features[5]
-    sum_avg      = features[6]
-    sum_var      = features[7]
-    sum_entropy  = features[8]
-    entropy      = features[9]
-    diff_var     = features[10]
-    diff_entropy = features[11]
+    
+    features     = np.zeros((13, img.shape[0], img.shape[1]), dtype=np.float32)
+    
+    features[0,:,:] = img.astype(np.float32)
+    homogeneity  = features[1]
+    asm          = features[2]
+    edge         = features[3]
+    contrast     = features[4]
+    correlation  = features[5]
+    idm          = features[6]
+    sum_avg      = features[7]
+    sum_var      = features[8]
+    sum_entropy  = features[9]
+    entropy      = features[10]
+    diff_var     = features[11]
+    diff_entropy = features[12]
 
+    
     GLCM     = np.empty((4, 16, 16), dtype=np.float32)
     GLCM_sum = np.empty((16, 16),    dtype=np.float32)
     px       = np.empty(16, dtype=np.float32)
@@ -220,9 +227,11 @@ def cal_glcm(img: npt.NDArray, img_min: np.int32, img_max: np.int32) -> npt.NDAr
     return features
 
 
-@feature13log([os.path.join(BASE_DIR, r'Images\1_090.pgm')])
-def cal_glcm_logged(img: npt.NDArray, img_min: np.int32, img_max: np.int32) -> npt.NDArray:
-    result = cal_glcm(img.astype(np.int32), img_min, img_max)
+@feature13log()
+def cal_glcm_logged(img: npt.NDArray, img_min: np.int32, img_max: np.int32 ,imageFile:str|os.PathLike[str]) -> npt.NDArray:
+    with Loader("Calculating Harlick Features"):
+        result = cal_glcm(img.astype(np.int32), img_min, img_max)
+    
     infofeature13log(f'Image stats  — min: {img_min}, max: {img_max}')                                                         # type: ignore
     infofeature13log(f'Feature shape: {result.shape}')                                                                          # type: ignore
     infofeature13log(f'Homogeneity  — min: {result[0].min():.4f}, max: {result[0].max():.4f}, mean: {result[0].mean():.4f}')   # type: ignore
@@ -249,25 +258,32 @@ class Features:
         except Exception as e:
             raise ValueError(f"Could not read Image '{filename}'.") from e
         self.img: npt.NDArray[np.uint8] = np.array(_img)
-        self.height  = _img.height
-        self.width   = _img.width
-        self.img_min = np.int32(self.img.min())
-        self.img_max = np.int32(self.img.max())
+        self.height     = _img.height
+        self.width      = _img.width
+        self.img_min    = np.int32(self.img.min())
+        self.img_max    = np.int32(self.img.max())
+        self.imgpath    = filename
+        self.features   = self._features()
 
-    @property
-    def features(self) -> npt.NDArray[np.float32]:
-        return cal_glcm_logged(self.img, self.img_min, self.img_max)
+    def _features(self) -> npt.NDArray[np.float32]:
+        return np.ascontiguousarray(
+            np.moveaxis(
+                cal_glcm_logged(
+                    self.img, 
+                    self.img_min, 
+                    self.img_max,
+                    imageFile = os.path.relpath(
+                        self.imgpath,
+                        start=os.path.basename(os.getcwd())
+                    )
+                ),0,-1
+            ).reshape(self.height*self.width,13),
+            dtype=np.float32
+        )
+        
 
 
 if __name__ == '__main__':
-    img1 = Features(r'E:\python\image processing\3_Rough Fuzzy C means/Images\1_090.pgm')
-    print("shape :", img1.img.shape)
-    print("dtype :", img1.img.dtype)
-    print("min   :", img1.img_min)
-    print("max   :", img1.img_max)
+    with Loader("Fetching Image",font=[ANSI.DIM,ANSI.BRIGHT_CYAN_BACKGROUND]):
+        img1 = Features(getImg())
     f = img1.features
-    print("Features shape:", f.shape)
-    print("Homogeneity sample [50:53, 80:83]:")
-    print(f[0, 50:53, 80:83])
-    print("Edge sample [50:53, 80:83]:")
-    print(f[2, 50:53, 80:83])

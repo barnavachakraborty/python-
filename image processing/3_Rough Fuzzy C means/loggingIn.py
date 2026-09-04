@@ -5,6 +5,7 @@ import inspect
 from typing import Callable
 import re
 import inspect
+from Loader import Loader
 
 def obj(funcname:str)->tuple:
     patternstr = re.compile(r"\s*(\w*)\w*")
@@ -29,11 +30,11 @@ class loggingIn:
         frame.f_globals[funcname] = dynamicinfo
         
 
-    def __call__(self, args:list):
-        imageFile = args
-        for i, image in enumerate(imageFile):
-            if not os.path.exists(image):
-                raise Exception('Image file{}: {} does not exist'.format(i, image))
+    def __call__(self, args:str|os.PathLike[str]|None = None):
+        self.imageFile = args
+        if self.imageFile is not None:
+            if not os.path.exists(self.imageFile):
+                raise Exception('Image file: {} does not exist'.format(self.imageFile))
 
         def decorator(originalFunction: Callable) -> Callable:
             def count(tag: str):
@@ -54,19 +55,22 @@ class loggingIn:
                 filebase = os.path.splitext(os.path.basename(inspect.getfile(originalFunction)))[0]
                 pyLogger = logging.getLogger(filebase)
                 pyLogger.setLevel(logging.INFO)
+                newImageFile = kwargs.get("imageFile")
+                if newImageFile is None:
+                    raise FileNotFoundError("No Image file given in logger")
+                if self.imageFile is None:
+                    self.imageFile = newImageFile
+                tag = f"[Image: {os.path.basename(self.imageFile)}, function: {originalFunction.__name__}]"
+                formatcount = count(tag)
+                self.formats[self.imageFile] = tag + f"-{formatcount + 1}"
+                messege = '\n'.join(self.messeges)
+                formatter = logging.Formatter('%(asctime)s: %(name)s{}:\n%(message)s'.format(self.formats[self.imageFile]))
 
-                for image in imageFile:
-                    tag = f"[Image: {os.path.basename(image)}, function: {originalFunction.__name__}]"
-                    formatcount = count(tag)
-                    self.formats[image] = tag + f"-{formatcount + 1}"
-                    messege = '\n'.join(self.messeges)
-                    formatter = logging.Formatter('%(asctime)s: %(name)s{}:\n%(message)s'.format(self.formats[image]))
-
-                    if not pyLogger.handlers:
-                        handler = logging.FileHandler(self.filename)
-                        pyLogger.addHandler(handler)
-                    pyLogger.handlers[0].setFormatter(formatter)
-                    pyLogger.info(messege)
+                if not pyLogger.handlers:
+                    handler = logging.FileHandler(self.filename)
+                    pyLogger.addHandler(handler)
+                pyLogger.handlers[0].setFormatter(formatter)
+                pyLogger.info(messege)
 
                 self.messeges.clear()
                 return result

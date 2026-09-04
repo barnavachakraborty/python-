@@ -1,0 +1,28 @@
+2026-09-04 09:31:54,602: HCM&FCM[Image: 1_090.pgm, function: HCM_logged]-1:
+1. HCM clusters: 41
+2. HCM label shape: (217, 181)
+2026-09-04 09:33:01,350: HCM&FCM[Image: 1_090.pgm, function: FCM_logged]-1:
+1. FCM clusters: 41
+2. FCM label shape: (217, 181)
+3. FCM membership shape: (39277, 41)
+2026-09-04 09:38:21,970: HCM&FCM[Image: 1_080.pgm, function: HCM_logged]-1:
+1. HCM clusters: 45
+2. HCM label shape: (217, 181)
+2026-09-04 09:39:39,565: HCM&FCM[Image: 1_080.pgm, function: FCM_logged]-1:
+1. FCM clusters: 45
+2. FCM label shape: (217, 181)
+3. FCM membership shape: (39277, 45)
+2026-09-04 09:46:11,428: HCM&FCM[Image: 1_100.pgm, function: HCM_logged]-1:
+1. HCM clusters: 42
+2. HCM label shape: (217, 181)
+2026-09-04 09:47:07,184: HCM&FCM[Image: 1_100.pgm, function: FCM_logged]-1:
+1. FCM clusters: 42
+2. FCM label shape: (217, 181)
+3. FCM membership shape: (39277, 42)
+2026-09-04 09:47:19,787: HCM&FCM[Image: 1_100.pgm, function: HCM_logged]-2:
+1. HCM clusters: 42
+2. HCM label shape: (217, 181)
+2026-09-04 09:48:07,741: HCM&FCM[Image: 1_100.pgm, function: FCM_logged]-2:
+1. FCM clusters: 42
+2. FCM label shape: (217, 181)
+3. FCM membership shape: (39277, 42)
