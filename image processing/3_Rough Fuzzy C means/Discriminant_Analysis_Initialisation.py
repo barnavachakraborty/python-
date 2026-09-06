@@ -18,7 +18,7 @@ os.makedirs(LOG_DIR, exist_ok=True)
 
 DAIlog = lI(os.path.join(LOG_DIR, 'Discriminant_Analysis_Initialisation.log'))
 
-@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True,nogil=True)
 def DISCRETISE(feature_matrix: npt.NDArray[np.float32], N: int):
     L = 101
     disc = np.zeros((N, 13), dtype=np.float32)

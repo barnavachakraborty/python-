@@ -18,7 +18,7 @@ os.makedirs(LOG_DIR, exist_ok=True)
 feature13log = loggingIn(os.path.join(LOG_DIR, '13_feature.log'))
 
 
-@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True,nogil=True)
 def cal_glcm(img: npt.NDArray, img_min: np.int32, img_max: np.int32) -> npt.NDArray:
     
     features     = np.zeros((13, img.shape[0], img.shape[1]), dtype=np.float32)
@@ -59,7 +59,7 @@ def cal_glcm(img: npt.NDArray, img_min: np.int32, img_max: np.int32) -> npt.NDAr
             jp1 = j + 1 if j + 1 < img.shape[1] else img.shape[1] - 1
             jp2 = j + 2 if j + 2 < img.shape[1] else img.shape[1] - 1
 
-            # ── 3x3 window normalized to 16 levels ──────────────
+            # ── 3x3 window normalized to 16 levels ────────────── 
             # a b c
             # d e f
             # g h k

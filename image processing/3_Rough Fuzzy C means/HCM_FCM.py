@@ -16,13 +16,13 @@ os.makedirs(LOG_DIR, exist_ok=True)
 HCMFCMlog = lI(os.path.join(LOG_DIR, "HCM_FCM.log"))
 
 @njit(cache=True,fastmath=True)
-def HCM(
+def _HCM(
     V:npt.NDArray[np.float32],      #centroids
     X:npt.NDArray[np.float32],      #features
     H:int,W:int,                    #dimensions
-    max_iter:int = 100
+    max_iter:int = 100,
+    n_classes = 4
 ):
-    n_classes = V.shape[0]
     n = X.shape[0]
     n_features = X.shape[1]
     labels = np.empty(n, dtype=np.int32)
@@ -72,16 +72,16 @@ def HCM(
         
     
 @njit(cache=True,fastmath=True,nogil=True)
-def FCM(
+def _FCM(
     V:npt.NDArray[np.float32],          #centroids  
     X:npt.NDArray[np.float32],          #features
     H:int,W:int,                
     epsilon:float=1e-5,
     max_iter=100,
     m_dash:float=2.0,
+    c = 4
 ):
-    c = V.shape[0]                  #number of centroids
-    n = X.shape[0]                  #number of pixels in total
+    n = X.shape[0]                      #number of pixels in total
     n_features = X.shape[1]
     if m_dash <= 1.0:
         raise ValueError("m_dash must be greater than 1")
@@ -166,14 +166,22 @@ def FCM(
 
 
 @HCMFCMlog()
-def HCM_logged(
+def HCM(
     V: npt.NDArray[np.float32],
     img: Features,
     imageFile: str | os.PathLike[str],
     max_iter: int = 100,
+    c = 4
 ):
-    with Loader("Running Hard C-Means"):
-        labels, centroids = HCM(V, img.features, img.height, img.width, max_iter)
+    with Loader(f"Running Hard C-Means( cluster-count = {c} )"):
+        labels, centroids = _HCM(
+            V, 
+            img.features, 
+            img.height, 
+            img.width, 
+            max_iter,
+            n_classes=c
+        )
 
     infoHCMFCMlog(f"HCM clusters: {centroids.shape[0]}")  # type: ignore
     infoHCMFCMlog(f"HCM label shape: {labels.shape}")  # type: ignore
@@ -181,17 +189,25 @@ def HCM_logged(
 
 
 @HCMFCMlog()
-def FCM_logged(
+def FCM(
     V: npt.NDArray[np.float32],
     img: Features,
     imageFile: str | os.PathLike[str],
     epsilon: float = 1e-5,
     max_iter: int = 100,
     m_dash: float = 2.0,
+    c = 4
 ):
-    with Loader("Running Fuzzy C-Means"):
-        labels, centroids, membership = FCM(
-            V, img.features, img.height, img.width, epsilon, max_iter, m_dash
+    with Loader(f"Running Fuzzy C-Means( cluster-count = {c} )"):
+        labels, centroids, membership = _FCM(
+            V, 
+            img.features, 
+            img.height, 
+            img.width, 
+            epsilon, 
+            max_iter, 
+            m_dash,
+            c = c
         )
 
     infoHCMFCMlog(f"FCM clusters: {centroids.shape[0]}")  # type: ignore
@@ -204,6 +220,6 @@ if __name__ == "__main__":
         imgPath = getImg()
     img = Features(imgPath)
     centroids = np.asarray(DAI(img, imageFile=imgPath), dtype=np.float32)
-    HCM_logged(centroids, img, imageFile=imgPath)
-    FCM_logged(centroids, img, imageFile=imgPath)
+    HCM(centroids, img, imageFile=imgPath)
+    FCM(centroids, img, imageFile=imgPath)
     
